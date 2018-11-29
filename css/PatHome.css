@@ -1,0 +1,97 @@
+@charset "utf-8";
+/* CSS Document */
+
+nav {
+	float: right;
+	padding-left: 4%;
+	padding-right: 1%;
+}
+
+nav ul li{
+	list-style-type: none;
+	text-aling: left;
+	padding-left: 120px;
+	font-size: 20px;
+	display: inline-block;
+	color: #1908F1;
+}
+
+nav ul li a{
+	text-decoration: none;
+	color: #000000
+}
+
+img {
+	width: 4%;
+	padding-left: 1%;
+}
+
+.hero-box {
+	height: 338px;
+	background-image:url("../WEB IMAGES/medical-web-designs.jpg");
+	background-size: cover;
+	margin: 1%;
+}
+
+h1 {
+	font-size: 78px;
+	padding-top: 120px;
+	padding-left: 60px;
+	
+}
+.col1 h2 {
+	font-size: 48px;
+}
+.col1 {
+	font-size: 20px;
+	width: 43%;
+	display: block;
+	float: left;
+	margin: 1%;
+	background-color: #FFFFFF;
+}
+
+.col2 {
+	width: 52.9%;
+	height: 900px;
+	background-image:url("../WEB IMAGES/sections-facilities-ambulatory.jpg");
+	background-size: cover;
+	display: block;
+	float: left;
+	margin: 1%;
+	background-color: #FFFFFF
+}
+
+.col2 h1 {
+	font-size: 48px;
+	text-align: center;
+}
+
+footer{
+	font-size: 20px;
+	text-align: center;
+}
+
+.login-form * {
+	display: block;
+	width: 33%;
+	border-radius: 3px;
+	margin: 20px;
+	border: solid 1px #565555;
+	padding: 5px;
+	color: gray;
+}
+
+.doctor-login {
+	display: block;
+	padding-top: 100px;
+	font-size: 28px;
+	margin: 1%;
+}
+
+.register {
+	display: block;
+	padding-top: 100px;
+	font-size: 28px;
+	margin: 1%;
+}
