@@ -169,7 +169,7 @@ body{
 				<?php include('errors.php'); ?>
 			<center>
 				<center><form method="post" action="index.php" class="login-form">
-				<input type="text" name="userName" placeholder="USERNAME">	
+				<input type="text" name="userName" value="<?php echo "$userName"; ?>" placeholder="USERNAME">	
 				<input type="password" name="password1" placeholder="PASSWORD">
 				
 				<button type="submit" value="Login" name="login" class="btn">Login</button>

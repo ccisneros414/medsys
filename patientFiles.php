@@ -176,10 +176,14 @@ function goBack() {
 	<center>
 	<div class="main">
 	<div class="circle"><img src="./images/img_avatar.png" width="200" height="200" alt="avatar"> </div> 
-	<?php include('patientCardDisplay.php')?>
 	<br/>
 	<br/>
 	<br/>
+	<form action="/action_page.php">
+  <input type="file" name="pic" accept="image/*">
+  <input type="submit">
+</form>
+
 	<br/>
 	<br/>
 	<br/>

@@ -132,6 +132,16 @@ nav ul li a{
 	padding: 5px;
 	color: gray;
 }
+.error {
+	width: 50%;
+	height:50%;
+	margin: 0px auto;
+	border: 1px solid #a94442;
+	color: #a94442;
+	background: #f2dede;
+	border-radius: 5px;
+	text-align: center;
+}
 </style>
 
 </head>
@@ -149,16 +159,24 @@ nav ul li a{
 		</header>
 		<main>
 			<center><p>Update any of the fields below: <br />
-				<center><form action="" class="login-form">
-				<input type="text" name="firstName" placeholder="First Name">
-				<input type="text" name="lastName" placeholder="Last Name">
+				<?php include "errors.php"; ?>
+				<center><form method="post" action="editInformation.php" class="login-form">
+				<input type="text" name="firstName" placeholder="First Name"
+				value="<?php echo "$firstName"; ?>">
+				<input type="text" name="lastName" placeholder="Last Name"
+				value="<?php echo "$lastName"; ?>">
 				<input type="text" name="password" placeholder="Password">
-				<input type="text" name="phoneNumber" placeholder="Phone Number">
-				<input type="text" name="address" placeholder="Address">
-				<input type="text" name="email" placeholder="Email">
+				<input type="text" name="phoneNumber" placeholder="Phone Number"
+				value="<?php echo "$phoneNumber"; ?>">
+				<input type="text" name="address" placeholder="Address"
+				value="<?php echo "$address"; ?>">
+				<input type="text" name="email" placeholder="Email"
+				value="<?php echo "$email"; ?>">
 				
-				<input type="button" value="Submit">
-				</form></center>
+				<button type="submit" name="editInformation" value="Submit">Submit</button>
+				</form>
+				<p style="font-size:12px;">For security purposes, some fields are not listed. If you would like to update sensitive information, please contanct your clinic.</p>
+			</center>
 		</main>
 	</body>
 </html>

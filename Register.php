@@ -95,17 +95,28 @@ body{
 				
 				<?php include('errors.php'); ?>
 			<form method="post" action="Register.php" class="login-form">
-				<input type="text" name="firstName" placeholder="First Name">
-				<input type="text" name="lastName" placeholder="Last Name">
-				<input type="text" name="userName" placeholder="Username">
+				<input type="text" name="firstName" placeholder="First Name"
+				value="<?php echo "$firstName"; ?>">
+				<input type="text" name="lastName" placeholder="Last Name"
+				value="<?php echo "$lastName"; ?>">
+				<input type="text" name="userName" placeholder="Username"
+				value="<?php echo "$userName"; ?>">
 				<input type="password" name="password1" placeholder="Password">
 				<input type="password" name="password2" placeholder="Confirm Password">
-				<input type="text" name="address" placeholder="Address">
-				<input type="text" name="city" placeholder="City">
-				<input type="text" name="state" placeholder="State">
-				<input type="text" name="phoneNumber" placeholder="Phone Number">
-				<input type="text" name="email" placeholder="Email Address">
-				<input type="text" name="birthday" placeholder="Birthdate in mm/dd/yyyy format">
+				<input type="text" name="address" placeholder="Address"
+				value="<?php echo "$address"; ?>">
+				<input type="text" name="city" placeholder="City"
+				value="<?php echo "$city"; ?>">
+				<input type="text" name="state" placeholder="State"
+				value="<?php echo "$state"; ?>">
+				<input type="test" name="zip" placeholder="ZIP code"
+				value="<?php echo "$zip"; ?>">
+				<input type="text" name="phoneNumber" placeholder="Phone Number"
+				value="<?php echo "$phoneNumber"; ?>">
+				<input type="text" name="email" placeholder="Email Address"
+				value="<?php echo "$email"; ?>">
+				<input type="text" name="birthday" placeholder="Birthdate in mm/dd/yyyy format"
+				value="<?php echo "$birthday"; ?>">
 				<input type="password" name="social" placeholder="Social Security">
 				
 				<button type="sumbit" name="register" class="btn">Register</button>

@@ -1,3 +1,4 @@
+<?php include('server.php'); ?>
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -60,13 +61,13 @@
 
 
 .main {	
+	left:20px;
 	float:right;
 	position: relative;
 	top: 60px;
 	background-color: #f8f8f8;	
     	height: 90%;
 	width: 90%;
-	z-index: 1;
 	box-shadow: 5px 10px 18px #888888;
     font-size: 12px; /* Increased text to enable scrolling */
 }
@@ -179,62 +180,39 @@ select {
 </style>
 </head>
 <body style="background-image: url(clinical-background-10.jpg)">
-<h2 style="font-size:25px; margin-left:20px;font-weight:bold;"> Receptionist Name
-				<a style="float:right; margin-right:20px;" href="index.php" class="button button1">Logout</a>	
+<h2 style="font-size:25px; margin-left:20px;font-weight:bold;"> <?php $fullName=$_SESSION['fullName']; echo "$fullName" ?>
+
+<form style="display:inline"action=""method="post"><input type="submit" style="float:right; margin-right:60px;" value="Logout" name="logout" class="button button1" /></form>
+
 </h2>
 
-<div class="main">
+	<div class="main">
 
 	<ul class="nav nav-tabs">
     		<li class="active"><a data-toggle="tab" href="#patients">Patients</a></li>
-   		 <li><a data-toggle="tab" href="#inbox">Inbox</a></li>
-   		 <li><a data-toggle="tab" href="#appointments">Appointments</a></li>
+   		 <li><a data-toggle="tab" href="#schedule">Schedule</a></li>
  	 </ul>
   
  	<div class="tab-content">
     		<div id="patients" class="tab-pane fade in active">
   <h3>My Patients</h3>
   <p>Search by name or email:</p>  
-  <input class="form-control" id="myInput" type="text" placeholder="Search..">
+  <input style="width:30%; background-color:#dcdcdc;"class="form-control" id="myInput" type="text" placeholder="Search..">
   <br>
-  <table style="overflow:scroll;" class="table table-bordered table-striped">
+  <table rules="rows" style="border-color:#dcdcdc;box-shadow: 5px 10px 18px #888888;">
     <thead>
-      <tr>
-        <th>Firstname</th>
-        <th>Lastname</th>
+      <tr style="font-size:15px; background-color:#dcdcdc;">
+        <th>First Name</th>
+        <th>Last Name</th>
 	<th>Email</th>
 	<th> </th>
       </tr>
     </thead>
     <tbody id="myTable">
-      <tr>
-        <td><img style="margin:0px 20px;" width="50px;"height="50px;" src="./images/img_avatar.png"></th> &emsp; John</td>
-        <td>Doe</td>
-	<td>john@example.com</td>
-	<th><a href="patientCard.php">View Patient Card</a>
-      </tr>
-      <tr>
-        <td><img style="margin:0px 20px;" width="50px;"height="50px;" src="./images/img_avatar.png"></th> &emsp; Mary</td>
-        <td>Moe</td>
-        <td>mary@mail.com</td>
-	<th><a href="patientCard.php">View Patient Card</a>
-      </tr>
-      <tr>
-        <td><img style="margin:0px 20px;" width="50px;"height="50px;" src="./images/img_avatar.png"></th> &emsp; July</td>
-        <td>Dooley</td>
-        <td>july@john.com</td>
-	<th><a href="patientCard.php">View Patient Card</a>
-      </tr>
-      <tr>
-        <td><img style="margin:0px 20px;" width="50px;"height="50px;" src="./images/img_avatar.png"></th> &emsp; Aria</td>
-        <td>Ravendale</td>
-        <td>a_r@test.com</td>
-	<th><a href="patientCard.php">View Patient Card</a>
-      </tr>
+        <?php include('nursePatients.php');  ?>
     </tbody>
   </table>
   
-
 <script>
 $(document).ready(function(){
   $("#myInput").on("keyup", function() {
@@ -249,140 +227,198 @@ $(document).ready(function(){
 
 
 		</div>
-   		 <div id="inbox" class="tab-pane fade">
-     			 <h3>Inbox</h3>
-      			<p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-    		<div class="container">
-  <img src="./images/img_avatar.png" alt="Avatar">
-  <p>Hello. How are you today?</p>
-  <span class="time-right">11:00</span>
-</div>
-
-<div class="container darker">
-  <img src="./images/img_avatar.png" alt="Avatar" class="right">
-  <p>Hey! I'm fine. Thanks for asking!</p>
-  <span class="time-left">11:01</span>
-</div>
-
-<div class="container">
-  <img src="./images/img_avatar.png" alt="Avatar">
-  <p>Sweet! So, what do you wanna do today?</p>
-  <span class="time-right">11:02</span>
-</div>
-
-<div class="container darker">
-  <img src="./images/img_avatar.png" alt="Avatar" class="right">
-  <p>Nah, I dunno. Play soccer.. or learn more coding perhaps?</p>
-  <span class="time-left">11:05</span>
-</div>
-			<div class="mainbottom"> 
-				<a class="button button1" href="appointments.php">New Message</a>	
-			</div>
-</div>
-    		
-	<div id="appointments" class="tab-pane fad">
-		<h3>My Appointments</h3>
-		<div class ="custom-select">
-		<select id="apptSelect" onchange="request()">
-			<option value="apptUpcoming">Upcoming</option>
-			<option value="apptPrevious">Previous</option>
+    		<div id="schedule" class="tab-pane fade">
+			<h3>This Week</h3>
+			<hr />		
+		<select id="schedSelect" onchange="schedule()">
+			<option value="doctorSched1">DoctorName1</option>
+			<option value="doctorSched2">DoctorName2</option>
+			<option value="doctorSched3">DoctorName2</option>
+			<option value="doctorSched4">DoctorName2</option>
 		</select>
+
+		<div id="doc1-currentWeek">
+		<table class="table table-striped" style="border:solid 1px #dcdcdc;">
+			<tr>
+				<th></th>
+				<th>MON</th>
+				<th>TUE</th>
+				<th>WED</th>
+				<th>THRS</th>
+				<th>FRI</th>
+			</tr>
+			<tr>
+				<th>7:00am</th>
+				<td>X</td>
+				<td>X</td>
+				<td>X</td>
+				<td> </td>
+				<td> </td>
+			</tr>
+			<tr>
+				<th>8:00am</th>
+				<td>X</td>
+				<td> </td>
+				<td> </td>
+				<td>X</td>
+				<td>X</td>
+			</tr>
+			<tr>
+				<th>9:00am</th>
+				<td>X</td>
+				<td>X</td>
+				<td>X</td>
+				<td>X</td>
+				<td>X</td>
+			</tr>
+			<tr>
+				<th>10:00am</th>
+				<td> </td>
+				<td> </td>
+				<td> </td>
+				<td> </td>
+				<td> </td>
+			</tr>
+			<tr>
+				<th>11:00am</th>
+				<td> </td>
+				<td>X</td>
+				<td>X</td>
+				<td> </td>
+				<td> </td>
+			</tr>
+			<tr>
+				<th>12:00pm</th>
+				<td>X</td>
+				<td> </td>
+				<td>X </td>
+				<td> </td>
+				<td> </td>
+			</tr>
+			<tr>
+				<th>1:00pm</th>
+				<td> </td>
+				<td> </td>
+				<td> </td>
+				<td> </td>
+				<td> </td>
+			</tr>
+			<tr>
+				<th>2:00pm</th>
+				<td>X</td>
+				<td>X</td>
+				<td>X</td>
+				<td>X</td>
+				<td>X</td>
+			</tr>
+			<tr>
+				<th>3:00pm</th>
+				<td> </td>
+				<td> </td>
+				<td> </td>
+				<td> </td>
+				<td> </td>
+			</tr>
+
+		</table>
 		</div>
-		<div id="upcomingDiv">
-		
-		 <table>
-                <tr style="background-color:#dcdcdc">
-			<th>Doctor</th> 
-			<th>Patient</th>
-			<th>Time</th>
-			<th>Date</th>
-			<th></th>
-                </tr>
-                <tr>
-                        <td>Alfreds Futterkiste</td>
-			<td>Patient Sickboi</td>
-			<td>10:30AM</td>
-                        <td>10.12.18</td>
-			<th><a href="patientCard.php">Confirm Appointment</a>
-                </tr>
-                <tr>
-                        <td>Lady Womanson</td>
-			<td>Patient Sickboi</td>
-                        <td>1:30PM</td>
-                        <td>10.12.18</td>
-			<th><a href="patientCard.php">Confirm Appointment</a>
-                </tr>
-                <tr>
-                        <td>Ernst Handel</td>
-			<td>Patient Sickboi</td>
-                        <td>2:15PM</td>
-                        <td>10.12.18</td>
-			<th><a href="patientCard.php">Confirm Appointment</a>
-                </tr>
-                <tr>
-                        <td>Guy Dude</td>
-			<td>Patient Sickboi</td>
-                        <td>2:30PM</td>
-                        <td>10.12.18</td>
-			<th><a href="patientCard.php">Confirm Appointment</a>
-                </tr>
-                <tr>
-                        <td>Guy Dude</td>
-			<td>Patient Sickboi</td>
-                        <td>5:00PM</td>
-                        <td>10.12.18</td>
-			<th><a href="patientCard.php">Confirm Appointment</a>
-                </tr>
-                <tr>
-                        <td>Lady Womanson</td>
-			<td>Patient Sickboi</td>
-                        <td>5:00PM</td>
-                        <td>10.12.18</td>
-			<th><a href="patientCard.php">Confirm Appointment</a>
-                </tr>
-                </table>
+		<div id="doc2-currentWeek" style="display:none">
+		<table class="table table-striped" style="border:solid 1px #dcdcdc;">
+			<tr>
+				<th></th>
+				<th>MON</th>
+				<th>TUE</th>
+				<th>WED</th>
+				<th>THRS</th>
+				<th>FRI</th>
+			</tr>
+			<tr>
+				<th>7:00am</th>
+				<td></td>
+				<td></td>
+				<td</td>
+				<td> </td>
+				<td> </td>
+			</tr>
+			<tr>
+				<th>8:00am</th>
+				<td></td>
+				<td> </td>
+				<td> </td>
+				<td></td>
+				<td>X</td>
+			</tr>
+			<tr>
+				<th>9:00am</th>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<th>10:00am</th>
+				<td>X</td>
+				<td>X</td>
+				<td>X</td>
+				<td>X</td>
+				<td>X</td>
+			</tr>
+			<tr>
+				<th>11:00am</th>
+				<td>X</td>
+				<td>X</td>
+				<td>X</td>
+				<td>X</td>
+				<td>X</td>
+			</tr>
+			<tr>
+				<th>12:00pm</th>
+				<td>X</td>
+				<td> </td>
+				<td>X </td>
+				<td> </td>
+				<td> </td>
+			</tr>
+			<tr>
+				<th>1:00pm</th>
+				<td>X</td>
+				<td>X</td>
+				<td>X</td>
+				<td>X</td>
+				<td> </td>
+			</tr>
+			<tr>
+				<th>2:00pm</th>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<th>3:00pm</th>
+				<td>X</td>
+				<td>X</td>
+				<td> </td>
+				<td> </td>
+				<td> </td>
+			</tr>
 
-
-		</div>
-
-		<div id="previousDiv" style="display:none;">
-			<table>
-                <tr style="background-color:#dcdcdc">
-			<th>Doctor</th> 
-			<th>Patient</th>
-			<th>Time</th>
-			<th>Date</th>
-			<th></th>
-                </tr>
-                <tr>
-                        <td>Alfreds Futterkiste</td>
-			<td>Patient Sickboi</td>
-			<td>10:30AM</td>
-                        <td>10.12.18</td>
-			<th><a href="patientCard.php">Verify Patient Card</a>
-                </tr>
-                <tr>
-                        <td>Lady Womanson</td>
-			<td>Patient Sickboi</td>
-                        <td>1:30PM</td>
-                        <td>10.12.18</td>
-			<th><a href="patientCard.php">Verify Patient Card</a>
-                </tr>
-                </table>
-
+		</table>
 		</div>
 
 		<script>
-			function request(){
-				if(document.getElementById('apptSelect').value=="apptUpcoming"){
-					var x = document.getElementById("upcomingDiv");
-					var y = document.getElementById("previousDiv");
+			function schedule(){
+				if(document.getElementById('schedSelect').value=="doctorSched1"){
+					var x = document.getElementById("doc1-currentWeek");
+					var y = document.getElementById("doc2-currentWeek");
 					x.style.display = "block";
 					y.style.display = "none";	
 					
-				} else if(document.getElementById('apptSelect').value=="apptPrevious"){
-					var x = document.getElementById("upcomingDiv");
-					var y = document.getElementById("previousDiv");
+				} else if(document.getElementById('schedSelect').value=="doctorSched2"){
+					var x = document.getElementById("doc1-currentWeek");
+					var y = document.getElementById("doc2-currentWeek");
 					y.style.display = "block";
 					x.style.display = "none";
 				
@@ -390,10 +426,7 @@ $(document).ready(function(){
 			}
 		</script>
 
-</div>
-	</div>
-
-</div>
+	 </div>
 
 	</body>
 </html>

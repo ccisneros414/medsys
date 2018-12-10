@@ -16,6 +16,7 @@
 		$password2 = ($_POST['password2']);
 		$address = ($_POST['address']);
 		$city = ($_POST['city']);
+		$zip = ($_POST['zip']);
 		$state = ($_POST['state']);
 		$phoneNumber = ($_POST['phoneNumber']);
 		$email = ($_POST['email']);
@@ -46,6 +47,9 @@
 		}
 		if (empty($state) ) {
 			$errors[] = "State is required";
+		}
+		if (empty($zip)) {
+			$errors[] = "ZIP is required";
 		}
 		if (empty($phoneNumber) ) {
 			$errors[] = "Phone Number is required";
@@ -83,11 +87,11 @@
 		}
 
 		// if correct input, save to database
-		$fullAddr = $address . " " . $city . " " . $state;
+		$fullAddr = $address . " " . $city . ", " . $state . " " . $zip;
 		$fullName = $firstName . " " . $lastName;
 		if (count($errors) == 0) {
-			$sql = "INSERT INTO Patients (balanceDue,doctorName,fullName,firstName,lastName,userName,passwordHash,address,phoneNumber,email,birthday,social,auth) 
-				VALUES (0,'','$fullName', '$firstName', '$lastName', '$userName', '$password1', '$fullAddr', $phoneNumber, '$email', '$birthday', $social, 'false')";
+			$sql = "INSERT INTO Patients (balanceDue,doctorName,fullName,firstName,lastName,userName,passwordHash,address,phoneNumber,email,birthday,social,auth,insuranceProvider,insuranceGroupNumber,insuranceId) 
+				VALUES (0,'','$fullName', '$firstName', '$lastName', '$userName', '$password1', '$fullAddr', '$phoneNumber', '$email', '$birthday', $social, 'false', '', 0, 0)";
 			if (mysqli_query($db,$sql)){
 				$errors[] = "Your registration request has been received";
 			} else {
@@ -108,11 +112,11 @@
 			$errors[] = "Password is required";
 		}
 
-		if (count($errors) == 0) {
+		if (count($errors) == 0) { //patient login
 			$query = "SELECT auth FROM Patients WHERE userName='$userName' AND passwordHash='$password1'";
 			$result = mysqli_query($db, $query);
 			if (mysqli_num_rows($result) == 1) {
-				$queryAuth = "SELECT auth FROM Patients WHERE auth='true'";
+				$queryAuth = "SELECT * FROM Patients WHERE userName='$userName' AND auth='true'";
 				$auth = mysqli_query($db, $queryAuth);
 				if (mysqli_num_rows($auth) == 1) {
 					$_SESSION['user'] = $userName;
@@ -126,14 +130,56 @@
 				} else {
 					$errors[] = "not authenticated";
 				}
+			} else {		
+			//doctor login
+			$query = "SELECT * FROM Doctors WHERE userName='$userName' AND passwordHash='$password1'";
+			$result = mysqli_query($db, $query);
+			if (mysqli_num_rows($result) == 1) {
+				$_SESSION['user'] = $userName;
+				$_SESSION['success'] = "You are now logged in";
+				$sql = "SELECT * FROM Doctors WHERE userName='$userName'";
+				$result = mysqli_query($db,$sql);
+				while ($row = mysqli_fetch_assoc($result)) {
+					$_SESSION['fullName'] = $row['fullName'];
+				}
+				header('location: doctorDash.php');
+			} else {
+			//nurse login
+			$query = "SELECT * FROM Nurses WHERE userName='$userName' AND passwordHash='$password1'";
+			$result = mysqli_query($db, $query);
+			if (mysqli_num_rows($result) == 1) {
+				$_SESSION['user'] = $userName;
+				$_SESSION['success'] = "You are now logged in";
+				$sql = "SELECT * FROM Nurses WHERE userName='$userName'";
+				$result = mysqli_query($db,$sql);
+				while ($row = mysqli_fetch_assoc($result)) {
+					$_SESSION['fullName'] = $row['fullName'];
+				}
+				header('location: nurseDash.php');
+			} else {
+			//receptionist login
+			$query = "SELECT * FROM Receptionist WHERE userName='$userName' AND passwordHash='$password1'";
+			$result = mysqli_query($db, $query);
+			if (mysqli_num_rows($result) == 1) {
+				$_SESSION['user'] = $userName;
+				$_SESSION['success'] = "You are now logged in";
+				$sql = "SELECT * FROM Receptionist WHERE userName='$userName'";
+				$result = mysqli_query($db,$sql);
+				while ($row = mysqli_fetch_assoc($result)) {
+					$_SESSION['fullName'] = $row['fullName'];
+				}
+				header('location: receptionistDash.php');
 			} else {
 				$errors[] = "wrong username/password combonation";
+			}
+			}
+			}
 			}	
 		}
 	}
 
 	// log out
-	if (isset($_GET['logout'])) {
+	if (isset($_POST['logout'])) {
 		session_destroy();
 		unset($_SESSION['userName']);
 		header('location: index.php');
@@ -158,19 +204,19 @@
 		if (empty($social)) {
 			$errors[] = "Social Security Number is required";
 		}
-		$userName = $_SESSION['userName'];
-		$query = "SELECT * FROM Patients WHERE userName='$userName' AND social='$socail'";
+		$userName = $_SESSION['user'];
+		$query = "SELECT * FROM Patients WHERE userName='$userName' AND social='$social'";
 		$result = mysqli_query($db, $query);
 		if (mysqli_num_rows($result) != 1) {
 			$errors[] = "Incorrect Social Security Number";
 		}
 
 		if (count($errors) == 0) {
-			$userName = $_SESSION['userName'];
-			$sql = "UPDATE Patients SET insuranceProvider='$provider' insuranceGroupNumber='$groupNum' insuranceId='$id'
+			$userName = $_SESSION['user'];
+			$sql = "UPDATE Patients SET insuranceProvider='$provider', insuranceGroupNumber='$groupNum', insuranceId='$id'
 				WHERE userName='$userName'" ;
 			if (mysqli_query($db,$sql)){
-				$errors[] = "Your registration request has been received";
+				$errors[] = "Your Insurance Information has been updated";
 			} else {
 				echo "Error: " . $sql . "<br>" . mysqli_error($db);
 			}
@@ -178,17 +224,98 @@
 	}
 	
 	// if patient info is edited
-	if (isset($_POST['editInfo'])) {
+	if (isset($_POST['editInformation'])) {
+		$firstName = ($_POST['firstName']);
+		$lastName = ($_POST['lastName']);
+		$password = ($_POST['password']);
+		$phoneNumber = ($_POST['phoneNumber']);
+		$address = ($_POST['address']);
+		$email = ($_POST['email']);
+		$userName = $_SESSION['user'];
+		if (empty($firstName) && empty($lastName) && empty($password) && empty($phoneNumber) && empty($address) && empty($email)) {
+			$errors[] = "No changes made";
+		}
+		if ($firstName != '') {
+			$sql = "UPDATE Patients SET firstName='$firstName' WHERE userName='$userName'";
+			if (mysqli_query($db,$sql)){
+				$errors[] = "First Name updated succesfully";
+			} else {
+				echo "Error: " . $sql . "<br>" . mysqli_error($db);
+			}
+
+		}
+		if ($lastName != '') {
+			$sql = "UPDATE Patients SET lastName='$lastName' WHERE userName='$userName'";
+			if (mysqli_query($db,$sql)){
+				$errors[] = "Last Name updated succesfully";
+			} else {
+				echo "Error: " . $sql . "<br>" . mysqli_error($db);
+			}
+		}
+		if ($password != '') {
+			$sql = "UPDATE Patients SET passwordHash='$password' WHERE userName='$userName'";
+			if (mysqli_query($db,$sql)){
+				$errors[] = "Password updated succesfully";
+			} else {
+				echo "Error: " . $sql . "<br>" . mysqli_error($db);
+			}
+		}
+		if ($phoneNumber != '') {
+			$sql = "UPDATE Patients SET phoneNumber='$phoneNumber' WHERE userName='$userName'";
+			if (mysqli_query($db,$sql)){
+				$errors[] = "Phone Number updated succesfully";
+			} else {
+				echo "Error: " . $sql . "<br>" . mysqli_error($db);
+			}
+		}
+		if ($address != '') {
+			$sql = "UPDATE Patients SET address='$address' WHERE userName='$userName'";
+			if (mysqli_query($db,$sql)){
+				$errors[] = "Address updated succesfully";
+			} else {
+				echo "Error: " . $sql . "<br>" . mysqli_error($db);
+			}
+		}
+		if ($email != '') {
+			$sql = "UPDATE Patients SET email='$email' WHERE userName='$userName'";
+			if (mysqli_query($db,$sql)){
+				$errors[] = "Email updated succesfully";
+			} else {
+				echo "Error: " . $sql . "<br>" . mysqli_error($db);
+			}
+		}
+
 		
+
 	}
 
-	// if receptionist chooses to authenticate
-	//if (isset($_get['authenticate'])) {
-		
-	//}
-	
-	// display insurance info
+	if(isset($_POST['submitAppointment'])) {
+		$currentUserName = $_SESSION['user'];
+		$currentFullName = $_SESSION['fullName'];
+		$doctorName = ($_POST['doctorName']);
+		$date = ($_POST['date']);
+		$time = ($_POST['time']);
 
-	//UNFINISHED STEPS:
-	 
+		if(empty($doctorName)) {
+			$errors[] = "Doctor Name required";
+		}
+		if(empty($date)) {
+			$errors[] = "Date required";
+		}
+		if(empty($time)) {
+			$errors[] = "Time required";
+		}
+
+		if (count($errors) == 0) {
+			$sql = "INSERT INTO Appointments (userName,doctorName,date,aptTime,weekNumber,confirmed) 
+			VALUES ('$currentUserName','$doctorName','$date','$time',0,0)";
+			if (mysqli_query($db,$sql)){
+				$errors[] = "Your registration request has been received";
+			} else {
+				echo "Error: " . $sql . "<br>" . mysqli_error($db);
+			}
+		}
+			
+	}
+
 ?>

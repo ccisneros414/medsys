@@ -2,21 +2,43 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-	<title>Receptionist Dashboard</title>
+	<title>Doctor's Dashboard</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<style>
+	/* Chat containers */
+
+textarea {
+  width: 100%;
+  height: 150px;
+  padding: 12px 20px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  font-size: 16px;
+  resize: none;
+}
+.container {
+    border: 2px solid #dedede;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
+}
 
 
 .main {	
+	left:20px;
 	float:right;
+	box-shadow: 5px 10px 18px #888888;
 	position: relative;
 	top: 60px;
-	left:20px;	
-background-color: #f8f8f8;	
+	background-color: #f8f8f8;	
+    	height: 90%;
 	width: 90%;
 	box-shadow: 5px 10px 18px #888888;
     font-size: 12px; /* Increased text to enable scrolling */
@@ -60,6 +82,7 @@ table {
 	width: 95%;
     font-family: arial, sans-serif;
     border-collapse: collapse;
+	overflow: scroll;
 }
 
 td, th {
@@ -100,23 +123,11 @@ td, th {
 	width: 100%;
 
 }
-.chartCol1{
-	float:left;
-	padding: 25px;
-	width:65%;
-	height: 500px;
+.replyBox{
+	top-margin:200px;
+	padding: 100px;
+	width:100%;
 
-}
-.chartCol2{
-		
-	margin-right: 5%;
-	float:right;
-	padding: 25px;
-	width: 30%;
-	height: 500px;
-	background-color: #dcdcdc;
-	border-radius: 5px;
-	box-shadow: 5px 10px 18px #888888;
 }
 select {
 	border: 1px solid #ccc;
@@ -130,8 +141,8 @@ select {
 </head>
 <body style="background-image: url(clinical-background-10.jpg)">
 <h2 style="font-size:25px; margin-left:20px;font-weight:bold;"> <?php $fullName=$_SESSION['fullName']; echo "$fullName" ?>
- <form style="display:inline"action=""method="post"><input type="submit" style="float:right; margin-right:60px;" value="Logout" name="logout" class="button button1" /></form>
 
+<form style="display:inline"action=""method="post"><input type="submit" style="float:right; margin-right:60px;" value="Logout" name="logout" class="button button1" /></form>
 
 </h2>
 
@@ -140,17 +151,29 @@ select {
 	<ul class="nav nav-tabs">
     		<li class="active"><a data-toggle="tab" href="#patients">Patients</a></li>
    		 <li><a data-toggle="tab" href="#schedule">Schedule</a></li>
-   		 <li><a data-toggle="tab" href="#requests">Requests</a></li>
+   		 <li><a data-toggle="tab" href="#inbox">Inbox</a></li>
  	 </ul>
   
  	<div class="tab-content">
-    		<div style="height:500px"id="patients" class="tab-pane fade in active">
-  <h3>My Clinic</h3>
-  <p>Search for registered patients by name or email:</p>  
-  <input style="width:30%; background-color:#dcdcdc;"class="form-control" id="myInput" type="text" placeholder="Search..">
+    		<div id="patients" class="tab-pane fade in active">
+  <h3>My Patients</h3>
+  <p>Search by name or email:</p>
+  <input class="form-control" style="width:30%;background-color:#dcdcdc;'id="myInput" type="text" placeholder="Search..">
   <br>
-<div style=" width:100%;box-shadow: 5px 10px 18px #888888;overflow-y:scroll">
- <?php include ('receptionistPatients.php'); ?>
+<div>
+  <table rules="rows" style="border-color:#dcdcdc;box-shadow: 5px 10px 18px #888888;">
+    <thead>
+      <tr style="font-size:15px; background-color:#dcdcdc;">
+        <th>First Name</th>
+        <th>Last Name</th>
+	<th>Email</th>
+	<th> </th>
+      </tr>
+    </thead>
+    <tbody "myTable">
+<?php include('doctorPatients.php');  ?>
+    </tbody>
+  </table>
 </div>
 <script>
 $(document).ready(function(){
@@ -166,18 +189,18 @@ $(document).ready(function(){
 
 
 		</div>
-    		<div id="schedule" style="height: 500px;"class="tab-pane fade">
+    		<div id="schedule" class="tab-pane fade">
 			<h3>This Week</h3>
 			<hr />		
 		<select id="schedSelect" onchange="schedule()">
-			<option value="doctorSched1">DoctorName1</option>
-			<option value="doctorSched2">DoctorName2</option>
-			<option value="doctorSched3">DoctorName2</option>
-			<option value="doctorSched4">DoctorName2</option>
+			<option value="thisWeek">This Week</option>
+			<option value="next">Week x+1</option>
+			<option value="doctorSched3">Week x+2</option>
+			<option value="doctorSched4">Week x+3</option>
 		</select>
-		<br/>
+
 		<div id="doc1-currentWeek">
-		<table class="table table-striped" style="border: solid 1px #dcdcdc;">
+		<table class="table table-striped" style="border:solid 1px #dcdcdc;">
 			<tr>
 				<th></th>
 				<th>MON</th>
@@ -261,8 +284,8 @@ $(document).ready(function(){
 
 		</table>
 		</div>
-		<div id="doc2-currentWeek" style="display:none">
-		<table class="table table-striped" style="border: solid 1px #dcdcdc;">
+		<div id="doc1-nextWeek" style="display:none">
+		<table class="table table-striped" style="border:solid 1px #dcdcdc;">
 			<tr>
 				<th></th>
 				<th>MON</th>
@@ -349,15 +372,15 @@ $(document).ready(function(){
 
 		<script>
 			function schedule(){
-				if(document.getElementById('schedSelect').value=="doctorSched1"){
+				if(document.getElementById('schedSelect').value=="thisWeek"){
 					var x = document.getElementById("doc1-currentWeek");
-					var y = document.getElementById("doc2-currentWeek");
+					var y = document.getElementById("doc1-nextWeek");
 					x.style.display = "block";
 					y.style.display = "none";	
 					
-				} else if(document.getElementById('schedSelect').value=="doctorSched2"){
+				} else if(document.getElementById('schedSelect').value=="next"){
 					var x = document.getElementById("doc1-currentWeek");
-					var y = document.getElementById("doc2-currentWeek");
+					var y = document.getElementById("doc1-nextWeek");
 					y.style.display = "block";
 					x.style.display = "none";
 				
@@ -366,40 +389,74 @@ $(document).ready(function(){
 		</script>
 
 	 </div>
-	<div id="requests"class="tab-pane fade">
-		<h3>Requests</h3>
-		<select id="reqSelect" onchange="request()">
-			<option value="apptRequests">Appointment Requests</option>
-			<option value="regRequests">Registration Requests</option>
-		</select>
+	<div id="inbox" class="tab-pane fad">
+		<h3>Inbox</h3>
 		<hr />
-		<div id="apptRequestDiv" style="overflow-y:scroll;box-shadow: 5px 10px 18px #888888;">
-			<?php include('appointmentRequests.php')?>
+		<div id="inboxTable" style="overflow-y:scroll; height:500px;border-radius:6px;display:block;">
+		<center>
+		<table rules="rows" style="border-color:#dcdcdc" id="myTable">
+			<tr>
+			<th id="patientName">PATIENT 1</th>
+			<td>message content</td>
+			<td>timestamp</td>
+			<td><a class="button button1" onclick="reply()">reply</a></td>
+			<tr>
+			<th id="patientName">PATIENT 2</th>
+			<td>message content</td>
+			<td>timestamp</td>
+			<td><a class="button button1" onclick="reply()">reply</a></td>
+			</tr>	
+			<tr>
+			<th>PATIENT 1</th>
+			<td>message content</td>
+			<td>timestamp</td>
+			<td><a class="button button1" onclick="reply()">reply</a></td>
+			</tr>
+			<tr>
+			<th>PATIENT 1</th>
+			<td>message content</td>
+			<td>timestamp</td>
+			<td><a class="button button1" onclick="reply()">reply</a></td>
+			</tr>
+<tr>
+			<th>PATIENT 1</th>
+			<td>message content</td>
+			<td>timestamp</td>
+			<td><a class="button button1" onclick="reply()">reply</a></td>
+			</tr>
+<tr>
+			<th>PATIENT 1</th>
+			<td>message content</td>
+			<td>timestamp</td>
+			<td><a class="button button1" onclick="reply()">reply</a></td>
+			</tr><tr>
+			<th>PATIENT 1</th>
+			<td>message content</td>
+			<td>timestamp</td>
+			<td><a class="button button1" onclick="reply()">reply</a></td>
+			</tr><tr>
+			<th>PATIENT 1</th>
+			<td>message content</td>
+			<td>timestamp</td>
+			<td><a class="button button1" onclick="reply()">reply</a></td>
+			</tr><tr>
+			<th>PATIENT 1</th>
+			<td>message content</td>
+			<td>timestamp</td>
+			<td><a class="button button1" onclick="reply()">reply</a></td>
+			</tr>
+		</table>
+		</center>
 		</div>
-		<div id="registerRequestDiv" style="overflow-y:scroll; box-shadow: 5px 10px 18px #888888; display:none;">
-			<?php include('receptionistRequests.php');?>
+		<div id="replyDiv">
 		</div>
-
 		<script>
-			function request(){
-				if(document.getElementById('reqSelect').value=="apptRequests"){
-					var x = document.getElementById("apptRequestDiv");
-					var y = document.getElementById("registerRequestDiv");
-					x.style.display = "block";
-					y.style.display = "none";	
-					
-				} else if(document.getElementById('reqSelect').value=="regRequests"){
-					var x = document.getElementById("apptRequestDiv");
-					var y = document.getElementById("registerRequestDiv");
-					y.style.display = "block";
-					x.style.display = "none";
-				
-				}
+			function reply(){
+				x = document.getElementById("replyDiv");
+				x.innerHTML = "<div class='replyBox'><textarea placeholder='Please write a reply...'></textarea><a class='button button1'>Reply<a/></div>";
 			}
 		</script>
 
-</div>
-	</div>
 
 </div>
 

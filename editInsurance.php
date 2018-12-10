@@ -166,7 +166,7 @@ nav ul li a{
 				<input type="text" name="insuranceId" placeholder="Insurance Id">
 				<input type="password" name="social" placeholder="Social Security">
 				
-				<button type="sumbit" name="editInsurance" class="btn">Register</button>
+				<button type="sumbit" name="editInsurance" class="btn">Submit</button>
 				</form></center>
 		</main>
 	</body>
